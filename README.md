@@ -4,58 +4,60 @@
 
 # X Bookmarks Manager
 
-**X (Twitter) yer işaretlerinizi modern bir masonry görünüme dönüştüren ücretsiz Chrome eklentisi.**
+**A free Chrome extension that turns your X (Twitter) bookmarks into a modern masonry view.**
 
-Arama, yazarlara göre filtreleme, JSON dışa aktarma ve tüm sayfaları otomatik yükleme — hepsi tek bir şık arayüzde.
+Search, filter by author, export to JSON, and auto-load all pages — all in one clean interface.
 
-[Kurulum](#-kurulum) · [Özellikler](#-özellikler) · [Gizlilik](#-gizlilik)
+**English** · [Türkçe](README.tr.md)
+
+[Installation](#-installation) · [Features](#-features) · [Privacy](#-privacy)
 
 </div>
 
 ---
 
-## ⬇️ Kurulum
+## ⬇️ Installation
 
-> Eklenti henüz Chrome Web Mağazası'nda değil; aşağıdaki adımlarla kolayca yükleyebilirsiniz.
+> The extension is not on the Chrome Web Store yet; you can install it easily with the steps below.
 
-1. **İndirin:** Bu sayfanın üstündeki yeşil **`Code`** butonuna tıklayın → **Download ZIP** ve dosyayı bilgisayarınıza çıkarın.
-   _(veya: `git clone https://github.com/sarisen/x-bookmark-manager.git`)_
-2. Chrome'da adres çubuğuna **`chrome://extensions`** yazıp açın.
-3. Sağ üstten **Geliştirici modu**nu açın.
-4. **Paketlenmemiş öğe yükle** butonuna tıklayın ve indirdiğiniz **`x-bookmark-manager`** klasörünü seçin.
-5. [x.com/i/bookmarks](https://x.com/i/bookmarks) sayfasını açın — yeni arayüz hazır! 🎉
+1. **Download:** Click the green **`Code`** button at the top of this page → **Download ZIP** and extract it on your computer.
+   _(or: `git clone https://github.com/sarisen/x-bookmark-manager.git`)_
+2. Open **`chrome://extensions`** in Chrome's address bar.
+3. Enable **Developer mode** from the top right.
+4. Click **Load unpacked** and select the extracted **`x-bookmark-manager`** folder.
+5. Open [x.com/i/bookmarks](https://x.com/i/bookmarks) — the new interface is ready! 🎉
 
-## ✨ Özellikler
+## ✨ Features
 
-- 🧱 **Masonry grid** — yer işaretleri aya göre gruplanmış kartlar halinde
-- 🔍 **Arama** ve **Yazarlar** sekmesiyle hızlı filtreleme
-- ⏬ **Tümünü Yükle** — ayarlanabilir gecikmeyle tüm sayfaları otomatik çeker (varsayılan 3 sn)
-- 🗑️ **Yer işaretinden çıkarma** — doğrudan kart üzerinden
-- 📤 **JSON dışa aktarma** — verileriniz tamamen sizde
-- ⚙️ **Ayarlar** — sayfalar arası bekleme süresi (1–60 sn)
+- 🧱 **Masonry grid** — bookmarks grouped into cards by month
+- 🔍 **Search** and an **Authors** tab for quick filtering
+- ⏬ **Load All** — automatically fetches every page with a configurable delay (default 3s)
+- 🗑️ **Remove bookmark** — directly from the card
+- 📤 **Export to JSON** — your data stays entirely with you
+- ⚙️ **Settings** — wait time between pages (1–60s)
 
-## ⚙️ Ayarlar
+## ⚙️ Settings
 
-Eklenti simgesine **sağ tık → Seçenekler**, veya yer işaretleri sayfasındaki **dişli simgesi**.
+**Right-click the extension icon → Options**, or use the **gear icon** on the bookmarks page.
 
-## 🔒 Gizlilik
+## 🔒 Privacy
 
-Tüm veriler **yalnızca tarayıcınızda** işlenir; hiçbir veri harici bir sunucuya gönderilmez, analitik/telemetri kullanılmaz. Ayrıntılar: [PRIVACY.md](PRIVACY.md)
+All data is processed **only in your browser**; nothing is sent to any external server and no analytics/telemetry is used. Details: [PRIVACY.md](PRIVACY.md)
 
-## 🧩 Proje yapısı
+## 🧩 Project structure
 
 ```
 ├── manifest.json
 ├── content/
-│   ├── content.js    # Arayüz
-│   ├── inject.js     # X API yakalama
+│   ├── content.js    # UI
+│   ├── inject.js     # X API capture
 │   ├── parser.js
 │   └── styles.css
-├── options/          # Ayarlar sayfası
-├── icons/            # Eklenti ikonları
-└── assets/           # Tanıtım görselleri
+├── options/          # Settings page
+├── icons/            # Extension icons
+└── assets/           # Promotional images
 ```
 
-## 📄 Lisans
+## 📄 License
 
 MIT
