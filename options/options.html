@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>X Bookmarks Manager — Ayarlar</title>
+    <link rel="stylesheet" href="options.css" />
+  </head>
+  <body>
+    <main class="wrap">
+      <header class="header">
+        <svg class="logo" viewBox="0 0 24 24" aria-hidden="true">
+          <path
+            fill="currentColor"
+            d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"
+          />
+        </svg>
+        <div>
+          <h1>X Bookmarks Manager</h1>
+          <p class="sub">Eklenti ayarları</p>
+        </div>
+      </header>
+
+      <section class="card">
+        <h2>Yükleme</h2>
+        <label class="field" for="fetch-delay">
+          <span class="label">Sayfalar arası bekleme süresi (saniye)</span>
+          <span class="hint">
+            "Tümünü Yükle" her sayfa isteği arasında bu kadar bekler. Ban
+            riskini azaltmak için en az 2–3 saniye önerilir.
+          </span>
+          <div class="input-row">
+            <input
+              type="number"
+              id="fetch-delay"
+              min="1"
+              max="60"
+              step="1"
+              value="3"
+            />
+            <span class="unit">sn</span>
+          </div>
+        </label>
+
+        <p class="status" id="status" hidden></p>
+
+        <div class="actions">
+          <button type="button" id="save-btn">Kaydet</button>
+          <button type="button" id="reset-btn" class="secondary">Varsayılana dön (3 sn)</button>
+        </div>
+      </section>
+
+      <footer class="footer">
+        Değişiklikler kaydedildikten sonra açık yer işaretleri sekmesine otomatik
+        uygulanır.
+      </footer>
+    </main>
+    <script src="options.js"></script>
+  </body>
+</html>
