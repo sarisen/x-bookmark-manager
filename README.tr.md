@@ -34,11 +34,18 @@ Arama, yazarlara göre filtreleme, JSON dışa aktarma ve tüm sayfaları otomat
 - ⏬ **Tümünü Yükle** — ayarlanabilir gecikmeyle tüm sayfaları otomatik çeker (varsayılan 3 sn)
 - 🗑️ **Yer işaretinden çıkarma** — doğrudan kart üzerinden
 - 📤 **JSON dışa aktarma** — verileriniz tamamen sizde
+- 🗓️ **Dönem seçimi** — son 7 gün, son 30 gün veya tüm arşivi dışa aktarın
+- 💾 **Yerel arşiv** — çekilen kayıtlar tarayıcı kapansa da korunur
 - ⚙️ **Ayarlar** — sayfalar arası bekleme süresi (1–60 sn)
 
 ## ⚙️ Ayarlar
 
 Eklenti simgesine **sağ tık → Seçenekler**, veya yer işaretleri sayfasındaki **dişli simgesi**.
+
+## JSON çıktısı
+
+Her kayıt tweet bilgilerine ek olarak `bookmarkedAt` ve `lastSeenAt` alanlarını içerir.
+`bookmarkedAt`, eklentinin kaydı ilk gördüğü zamandır ve haftalık/aylık işleme için kullanılır.
 
 ## 🔒 Gizlilik
 
