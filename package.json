@@ -1,0 +1,8 @@
+{
+  "name": "x-bookmark-manager",
+  "private": true,
+  "scripts": {
+    "test": "node --test",
+    "check": "node --check content/archive.js && node --check content/content.js && node --check content/inject.js && node --check content/parser.js"
+  }
+}

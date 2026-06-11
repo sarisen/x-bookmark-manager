@@ -564,6 +564,26 @@ body.xbm-active [data-testid="primaryColumn"] {
   z-index: 200;
 }
 
+.xbm-export-group {
+  display: flex;
+  align-items: stretch;
+}
+
+.xbm-export-select {
+  border: 1px solid #cfd9de;
+  border-right: 0;
+  border-radius: 20px 0 0 20px;
+  background: #fff;
+  color: #0f1419;
+  padding: 0 12px;
+  font: inherit;
+  outline: none;
+}
+
+.xbm-export-group .xbm-bottom-btn {
+  border-radius: 0 20px 20px 0;
+}
+
 .xbm-bottom-btn {
   display: inline-flex;
   align-items: center;

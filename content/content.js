@@ -1,4 +1,4 @@
-/* global XBookmarksParser, chrome */
+/* global XBookmarksParser, XBookmarksArchive, chrome */
 (function () {
   "use strict";
 
@@ -22,6 +22,7 @@
   let loadAllActive = false;
   let fetchChainTimer = null;
   let pendingRemoveId = null;
+  let archiveSaveTimer = null;
 
   function clampDelaySeconds(value) {
     const n = parseInt(value, 10);
@@ -53,14 +54,34 @@
     (document.head || document.documentElement).appendChild(script);
   }
 
-  function mergeBookmarks(tweets) {
-    let added = 0;
-    for (const tweet of tweets) {
-      if (!tweet?.id || bookmarks.has(tweet.id)) continue;
-      bookmarks.set(tweet.id, tweet);
-      added++;
+  function replaceBookmarks(items) {
+    bookmarks.clear();
+    for (const item of items) {
+      if (item?.id) bookmarks.set(String(item.id), item);
     }
-    return added;
+  }
+
+  function scheduleArchiveSave() {
+    clearTimeout(archiveSaveTimer);
+    archiveSaveTimer = setTimeout(async () => {
+      try {
+        await XBookmarksArchive.save(Array.from(bookmarks.values()));
+      } catch (error) {
+        console.error("X Bookmarks archive save failed", error);
+        showToast("Yerel arşiv kaydedilemedi");
+      }
+    }, 250);
+  }
+
+  function mergeBookmarks(tweets) {
+    const previousCount = bookmarks.size;
+    const merged = XBookmarksArchive.merge(
+      Array.from(bookmarks.values()),
+      tweets
+    );
+    replaceBookmarks(merged);
+    scheduleArchiveSave();
+    return bookmarks.size - previousCount;
   }
 
   function formatRelativeDate(iso) {
@@ -317,10 +338,17 @@
         </main>
 
         <div class="xbm-bottom-bar">
-          <button type="button" class="xbm-bottom-btn" id="xbm-export-bottom" title="JSON dışa aktar">
-            <svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 3v12.586l3.293-3.293 1.414 1.414L12 19.414l-4.707-4.707 1.414-1.414L11 15.586V3h1zm-7 14h14v2H5v-2z"/></svg>
-            Dışa Aktar
-          </button>
+          <div class="xbm-export-group">
+            <select id="xbm-export-range" class="xbm-export-select" aria-label="Dışa aktarma dönemi">
+              <option value="7">Son 7 gün (tweet tarihi)</option>
+              <option value="30">Son 30 gün (tweet tarihi)</option>
+              <option value="all">Tüm arşiv</option>
+            </select>
+            <button type="button" class="xbm-bottom-btn" id="xbm-export-bottom" title="JSON dışa aktar">
+              <svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 3v12.586l3.293-3.293 1.414 1.414L12 19.414l-4.707-4.707 1.414-1.414L11 15.586V3h1zm-7 14h14v2H5v-2z"/></svg>
+              Dışa Aktar
+            </button>
+          </div>
           <button type="button" class="xbm-bottom-btn" id="xbm-scroll-load" title="Kalan yer işaretlerini yavaşça yükle" ${!hasMore && !isLoading ? "disabled" : ""}>
             <svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 16l-6-6h12l-6 6zm0 4l-6-6h12l-6 6z"/></svg>
             <span id="xbm-load-label">${getLoadLabel()}</span>
@@ -375,6 +403,7 @@
 
   function removeBookmarkFromUI(tweetId) {
     bookmarks.delete(tweetId);
+    scheduleArchiveSave();
     const card = document.querySelector(`.xbm-card[data-id="${tweetId}"]`);
     if (card) {
       card.classList.add("xbm-card-removed");
@@ -450,29 +479,20 @@
     document.getElementById("xbm-settings-btn")?.addEventListener("click", () => {
       chrome.runtime.openOptionsPage();
     });
-    document.getElementById("xbm-export-btn")?.addEventListener("click", exportJson);
-    document.getElementById("xbm-export-bottom")?.addEventListener("click", exportJson);
+    document.getElementById("xbm-export-btn")?.addEventListener("click", () => exportJson("all"));
+    document.getElementById("xbm-export-bottom")?.addEventListener("click", () => {
+      const value = document.getElementById("xbm-export-range")?.value || "all";
+      exportJson(value);
+    });
     document.getElementById("xbm-scroll-load")?.addEventListener("click", startLoadAll);
   }
 
-  function exportJson() {
-    const data = {
-      exportedAt: new Date().toISOString(),
-      count: bookmarks.size,
-      bookmarks: Array.from(bookmarks.values())
-        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-        .map((b) => ({
-          id: b.id,
-          url: b.url,
-          text: b.text,
-          createdAt: b.createdAt,
-          author: b.author,
-          media: b.media,
-          metrics: b.metrics,
-          quotedTweet: b.quotedTweet,
-          lang: b.lang,
-        })),
-    };
+  function exportJson(range = "all") {
+    const days = range === "all" ? null : parseInt(range, 10);
+    const data = XBookmarksArchive.createExport(
+      Array.from(bookmarks.values()),
+      { days }
+    );
 
     const blob = new Blob([JSON.stringify(data, null, 2)], {
       type: "application/json",
@@ -481,7 +501,8 @@
     const a = document.createElement("a");
     const date = new Date().toISOString().slice(0, 10);
     a.href = url;
-    a.download = `x-bookmarks-${date}.json`;
+    const suffix = days ? `last-${days}-days` : "all";
+    a.download = `x-bookmarks-${suffix}-${date}.json`;
     a.click();
     URL.revokeObjectURL(url);
     showToast(`${data.count} yer işareti JSON olarak indirildi`);
@@ -645,6 +666,11 @@
   async function init() {
     injectScript();
     await loadSettings();
+    try {
+      replaceBookmarks(await XBookmarksArchive.load());
+    } catch (error) {
+      console.error("X Bookmarks archive load failed", error);
+    }
 
     chrome.storage.onChanged.addListener((changes, area) => {
       if (area !== "sync" || !changes[SETTINGS_KEY]) return;

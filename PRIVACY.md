@@ -11,7 +11,7 @@ X Bookmarks Manager, yalnızca tarayıcınızda çalışan ücretsiz bir Chrome 
 Eklenti aşağıdaki verileri **yalnızca yerel cihazınızda** işler:
 
 - X (Twitter) yer işaretleriniz (sayfa yüklenirken X'in kendi API'sinden okunur)
-- Sizin eklediğiniz kişisel notlar (`chrome.storage.local` içinde saklanır)
+- Yer işareti arşiviniz (`chrome.storage.local` içinde saklanır)
 
 ## Veri Aktarımı
 
@@ -23,12 +23,13 @@ Eklenti aşağıdaki verileri **yalnızca yerel cihazınızda** işler:
 
 | İzin | Amaç |
 |------|------|
-| `storage` | Sayfalar arası bekleme süresi ayarını saklamak |
+| `storage` | Ayarları ve yerel yer işareti arşivini saklamak |
+| `unlimitedStorage` | Büyük yer işareti arşivlerinin tarayıcı kotasına takılmasını önlemek |
 | `x.com` / `twitter.com` erişimi | Yer işaretleri sayfasında özel arayüzü göstermek ve X API yanıtlarını okumak |
 
 ## Veri Saklama ve Silme
 
-- Notlar cihazınızda saklanmaz; yalnızca yükleme bekleme süresi tercihi kaydedilir
+- Çekilen yer işaretleri sonraki oturumlarda kullanılmak üzere cihazınızda saklanır
 - Eklentiyi kaldırdığınızda veya tarayıcı verilerini temizlediğinizde notlar silinir
 - Yer işareti verileri eklenti tarafından kalıcı olarak saklanmaz; her oturumda X'ten yeniden okunur
 
