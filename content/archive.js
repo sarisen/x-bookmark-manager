@@ -87,13 +87,19 @@
     exportedAt = new Date().toISOString()
   ) {
     const days = Number.isFinite(options.days) ? options.days : null;
+    const from = options.from ? new Date(options.from).getTime() : null;
+    const to = options.to ? new Date(options.to).getTime() : null;
     const cutoff = days
       ? new Date(exportedAt).getTime() - days * 24 * 60 * 60 * 1000
       : null;
     const filtered = bookmarks.filter((bookmark) => {
-      if (!cutoff) return true;
       const date = getRangeDate(bookmark);
-      return date && new Date(date).getTime() >= cutoff;
+      if (!date) return !cutoff && !from && !to;
+      const timestamp = new Date(date).getTime();
+      if (from && timestamp < from) return false;
+      if (to && timestamp > to) return false;
+      if (cutoff && timestamp < cutoff) return false;
+      return true;
     });
     const sorted = [...filtered].sort(
       (a, b) =>
@@ -105,15 +111,23 @@
       schemaVersion: SCHEMA_VERSION,
       source: "x-bookmark-manager",
       exportedAt,
-      range: days
+      range: from || to
         ? {
+            type: "custom",
+            from: from ? new Date(from).toISOString() : null,
+            to: to ? new Date(to).toISOString() : null,
+            dateField: "createdAt",
+            fallbackDateField: "bookmarkedAt",
+          }
+        : days
+          ? {
             type: "rolling",
             days,
             since: new Date(cutoff).toISOString(),
             dateField: "createdAt",
             fallbackDateField: "bookmarkedAt",
           }
-        : { type: "all" },
+          : { type: "all" },
       count: sorted.length,
       bookmarks: sorted,
     };

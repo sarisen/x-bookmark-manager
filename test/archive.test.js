@@ -106,3 +106,26 @@ test("rolling export uses tweet date when the archive was first seen today", () 
   assert.equal(output.bookmarks[0].id, "new-tweet");
   assert.equal(output.range.dateField, "createdAt");
 });
+
+test("custom export includes both boundary dates", () => {
+  const archive = loadArchive();
+  const output = archive.createExport(
+    [
+      { id: "before", createdAt: "2026-05-31T23:59:59.999Z" },
+      { id: "start", createdAt: "2026-06-01T00:00:00.000Z" },
+      { id: "end", createdAt: "2026-06-05T23:59:59.999Z" },
+      { id: "after", createdAt: "2026-06-06T00:00:00.000Z" },
+    ],
+    {
+      from: "2026-06-01T00:00:00.000Z",
+      to: "2026-06-05T23:59:59.999Z",
+    },
+    "2026-06-11T10:00:00.000Z"
+  );
+
+  assert.deepEqual(
+    Array.from(output.bookmarks, (bookmark) => bookmark.id),
+    ["end", "start"]
+  );
+  assert.equal(output.range.type, "custom");
+});

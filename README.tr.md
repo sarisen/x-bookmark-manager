@@ -34,7 +34,7 @@ Arama, yazarlara göre filtreleme, JSON dışa aktarma ve tüm sayfaları otomat
 - ⏬ **Tümünü Yükle** — ayarlanabilir gecikmeyle tüm sayfaları otomatik çeker (varsayılan 3 sn)
 - 🗑️ **Yer işaretinden çıkarma** — doğrudan kart üzerinden
 - 📤 **JSON dışa aktarma** — verileriniz tamamen sizde
-- 🗓️ **Dönem seçimi** — tweet tarihine göre son 7 gün, son 30 gün veya tüm arşivi dışa aktarın
+- 🗓️ **Dönem seçimi** — tweet tarihine göre son 7 gün, son 30 gün, özel tarih aralığı veya tüm arşivi dışa aktarın
 - 💾 **Yerel arşiv** — çekilen kayıtlar tarayıcı kapansa da korunur
 - ⚙️ **Ayarlar** — sayfalar arası bekleme süresi (1–60 sn)
 

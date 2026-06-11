@@ -342,8 +342,14 @@
             <select id="xbm-export-range" class="xbm-export-select" aria-label="Dışa aktarma dönemi">
               <option value="7">Son 7 gün (tweet tarihi)</option>
               <option value="30">Son 30 gün (tweet tarihi)</option>
+              <option value="custom">Özel tarih aralığı</option>
               <option value="all">Tüm arşiv</option>
             </select>
+            <div id="xbm-custom-range" class="xbm-custom-range" hidden>
+              <input type="date" id="xbm-export-from" aria-label="Başlangıç tarihi" />
+              <span>–</span>
+              <input type="date" id="xbm-export-to" aria-label="Bitiş tarihi" />
+            </div>
             <button type="button" class="xbm-bottom-btn" id="xbm-export-bottom" title="JSON dışa aktar">
               <svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 3v12.586l3.293-3.293 1.414 1.414L12 19.414l-4.707-4.707 1.414-1.414L11 15.586V3h1zm-7 14h14v2H5v-2z"/></svg>
               Dışa Aktar
@@ -480,6 +486,10 @@
       chrome.runtime.openOptionsPage();
     });
     document.getElementById("xbm-export-btn")?.addEventListener("click", () => exportJson("all"));
+    document.getElementById("xbm-export-range")?.addEventListener("change", (event) => {
+      const customRange = document.getElementById("xbm-custom-range");
+      if (customRange) customRange.hidden = event.target.value !== "custom";
+    });
     document.getElementById("xbm-export-bottom")?.addEventListener("click", () => {
       const value = document.getElementById("xbm-export-range")?.value || "all";
       exportJson(value);
@@ -488,10 +498,28 @@
   }
 
   function exportJson(range = "all") {
-    const days = range === "all" ? null : parseInt(range, 10);
+    const days = ["7", "30"].includes(range) ? parseInt(range, 10) : null;
+    const fromValue = document.getElementById("xbm-export-from")?.value || null;
+    const toValue = document.getElementById("xbm-export-to")?.value || null;
+    let from = null;
+    let to = null;
+
+    if (range === "custom") {
+      if (!fromValue || !toValue) {
+        showToast("Başlangıç ve bitiş tarihini seçin");
+        return;
+      }
+      from = new Date(`${fromValue}T00:00:00`).toISOString();
+      to = new Date(`${toValue}T23:59:59.999`).toISOString();
+      if (new Date(from).getTime() > new Date(to).getTime()) {
+        showToast("Başlangıç tarihi bitişten sonra olamaz");
+        return;
+      }
+    }
+
     const data = XBookmarksArchive.createExport(
       Array.from(bookmarks.values()),
-      { days }
+      { days, from, to }
     );
 
     const blob = new Blob([JSON.stringify(data, null, 2)], {
@@ -501,7 +529,11 @@
     const a = document.createElement("a");
     const date = new Date().toISOString().slice(0, 10);
     a.href = url;
-    const suffix = days ? `last-${days}-days` : "all";
+    const suffix = range === "custom"
+      ? `${fromValue}-to-${toValue}`
+      : days
+        ? `last-${days}-days`
+        : "all";
     a.download = `x-bookmarks-${suffix}-${date}.json`;
     a.click();
     URL.revokeObjectURL(url);

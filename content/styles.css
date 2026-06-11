@@ -569,6 +569,28 @@ body.xbm-active [data-testid="primaryColumn"] {
   align-items: stretch;
 }
 
+.xbm-custom-range {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  border-block: 1px solid #cfd9de;
+  padding: 0 8px;
+}
+
+.xbm-custom-range[hidden] {
+  display: none;
+}
+
+.xbm-custom-range input {
+  width: 118px;
+  border: 0;
+  background: transparent;
+  color: #0f1419;
+  font: inherit;
+  font-size: 12px;
+  outline: none;
+}
+
 .xbm-export-select {
   border: 1px solid #cfd9de;
   border-right: 0;
