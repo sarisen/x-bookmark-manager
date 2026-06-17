@@ -34,11 +34,18 @@ Search, filter by author, export to JSON, and auto-load all pages — all in one
 - ⏬ **Load All** — automatically fetches every page with a configurable delay (default 3s)
 - 🗑️ **Remove bookmark** — directly from the card
 - 📤 **Export to JSON** — your data stays entirely with you
+- 🗓️ **Date ranges** — export the last 7 or 30 days, a custom date range, or the full archive by tweet date
+- 💾 **Local archive** — fetched bookmarks survive browser restarts
 - ⚙️ **Settings** — wait time between pages (1–60s)
 
 ## ⚙️ Settings
 
 **Right-click the extension icon → Options**, or use the **gear icon** on the bookmarks page.
+
+## JSON output
+
+Each record includes `bookmarkedAt` and `lastSeenAt` alongside the tweet data.
+`bookmarkedAt` is the first time the extension observed the bookmark and can drive weekly or monthly processing.
 
 ## 🔒 Privacy
 
